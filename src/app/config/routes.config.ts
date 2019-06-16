@@ -1,6 +1,12 @@
-const routesNames = {};
+const routesNames = {
+  home: '',
+  error404: '404'
+};
 
 export const RoutesConfig: any = {
   routesNames,
-  routes: {}
+  routes: {
+    home: `${routesNames.home}`,
+    error404: `${routesNames.error404}`
+  }
 };
