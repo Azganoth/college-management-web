@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { RoutesConfig } from './config/routes.config';
+
+const routesNames = RoutesConfig.routesNames;
 
 const routes: Routes = [];
 
