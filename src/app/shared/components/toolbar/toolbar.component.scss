@@ -1,0 +1,29 @@
+.app-toolbar {
+  position: fixed;
+  text-transform: uppercase;
+  top: 0;
+}
+
+.nav-links {
+  padding: 0 25px;
+}
+
+.nav-spacer {
+  flex: 1 1 auto;
+}
+
+.nav-link {
+  font-size: 16px;
+  color: white;
+}
+
+.home-img, .error404-img, .github-circle-img {
+  height: 26px;
+  margin: 0 4px 2px 0;
+}
+
+@media (max-width: 1000px) {
+  .nav-link-text {
+    display: none;
+  }
+}
