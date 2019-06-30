@@ -1,18 +1,18 @@
 <mat-toolbar class="app-toolbar" color="primary">
   <nav class="nav-links">
     <a mat-button class="nav-link" routerLink="/" matTooltip="Voltar para a home.">
-      <mat-icon class="home-img">home</mat-icon>
+      <mat-icon class="nav-link-icon">home</mat-icon>
       <span class="nav-link-text">Home</span>
     </a>
     <a mat-button class="nav-link" routerLink="/404" matTooltip="Ir para a página de erro 404.">
-      <mat-icon class="error404-img">error_outline</mat-icon>
+      <mat-icon class="nav-link-icon">error_outline</mat-icon>
       <span class="nav-link-text">404</span>
     </a>
   </nav>
   <div class="nav-spacer"></div>
   <div class="nav-links">
     <a mat-button class="nav-link" href="{{repoLink}}" matTooltip="Ir para o repositório do app.">
-      <img class="github-circle-img" src="../../../../assets/github-circle-white-transparent.svg" alt="github-img">
+      <img class="nav-link-icon" id="nav-link-icon-github" src="../../../../assets/github-circle-white-transparent.svg" alt="github-img">
       <span class="nav-link-text">GitHub</span>
     </a>
   </div>
