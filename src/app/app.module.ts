@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CoreModule } from './modules/core/core.module';
 import { Error404PageComponent } from './pages/error404-page/error404-page.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { SharedModule } from './shared/shared.module';
@@ -18,6 +19,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    CoreModule,
     SharedModule
   ],
   providers: [],
