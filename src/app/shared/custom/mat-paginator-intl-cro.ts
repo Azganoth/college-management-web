@@ -6,5 +6,6 @@ export class MatPaginatorIntlCro extends MatPaginatorIntl {
   lastPageLabel = 'Última página';
   nextPageLabel = 'Próxima página';
   previousPageLabel = 'Página anterior';
-  getRangeLabel = (page, pageSize, length) => `${page} de ${length}`;
+  getRangeLabel =
+    (page, pageSize, length) => `${page * pageSize + 1} - ${(page + 1) * pageSize} de ${length}`
 }
