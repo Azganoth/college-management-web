@@ -9,6 +9,8 @@ const routesNames = RoutesConfig.routesNames;
 const routes: Routes = [
   {path: routesNames.home, component: HomePageComponent},
   {path: routesNames.error404, component: Error404PageComponent},
+  {path: routesNames.professors.basePath, loadChildren:
+      () => import('./modules/professors/professors.module').then(m => m.ProfessorsModule)},
 
   {path: '**', redirectTo: RoutesConfig.routes.error404}
 ];

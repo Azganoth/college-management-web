@@ -1,6 +1,13 @@
+const basePaths = {
+  professors: 'professors'
+};
+
 const routesNames = {
   home: '',
-  error404: '404'
+  error404: '404',
+  professors: {
+    basePath: basePaths.professors
+  }
 };
 
 export const RoutesConfig: any = {
