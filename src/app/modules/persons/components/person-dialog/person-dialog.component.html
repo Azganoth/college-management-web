@@ -1,0 +1,107 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div mat-dialog-content *ngIf="personForm" [formGroup]="personForm">
+  <mat-form-field>
+    <label>
+      <input matInput type="text" placeholder="Nome" formControlName="name">
+    </label>
+    <mat-error *ngIf="personForm.get('name').hasError('required')">O nome é <strong>requerido</strong>!</mat-error>
+  </mat-form-field>
+  <div class="common-fields">
+    <mat-form-field>
+      <mat-label>Gênero</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option>Nenhum</mat-option>
+        <mat-option *ngFor="let gender of personGender" [value]="gender.value">
+          {{gender.viewValue}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="personForm.get('gender').hasError('required')">O gênero é <strong>requerido</strong>!</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <label>
+        <input matInput [max]="today" [matDatepicker]="datepicker" placeholder="Data de Nascimento" formControlName="birthDate">
+      </label>
+      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+      <mat-error *ngIf="personForm.get('birthDate').hasError('required')">A data de nascimento é <strong>requerida</strong>!</mat-error>
+    </mat-form-field>
+  </div>
+  <mat-form-field>
+    <label>
+      <input matInput type="email" placeholder="Email" formControlName="email">
+    </label>
+    <mat-error *ngIf="personForm.get('email').hasError('email')">O email é <strong>inválido</strong>!</mat-error>
+    <mat-hint>exemplo@dominio.com</mat-hint>
+  </mat-form-field>
+  <mat-form-field>
+    <label>
+      <input matInput type="tel" placeholder="Telefones" formControlName="phones">
+    </label>
+    <mat-error *ngIf="personForm.get('phones').hasError('required')">Pelo menos um telefone é <strong>requerido</strong></mat-error>
+    <mat-error *ngIf="personForm.get('phones').hasError('pattern')">O texto é <strong>inválido</strong>!</mat-error>
+  </mat-form-field>
+  <div class="address-fields" formGroupName="address">
+    <mat-form-field>
+      <label>
+        <input matInput type="text" placeholder="Logradouro" formControlName="street">
+      </label>
+      <mat-error *ngIf="personForm.get('address.street').hasError('required')">O logradouro é <strong>requerido</strong>!</mat-error>
+    </mat-form-field>
+    <div class="common-fields">
+      <mat-form-field>
+        <label>
+          <input matInput type="text" placeholder="Número do logradouro" formControlName="number">
+        </label>
+      </mat-form-field>
+      <mat-form-field>
+        <label>
+          <input matInput type="text" placeholder="Número do apartamento/quarto" formControlName="numberAptRoom">
+        </label>
+      </mat-form-field>
+    </div>
+    <mat-form-field>
+      <label>
+        <textarea matInput placeholder="Complemento" formControlName="complement"></textarea>
+      </label>
+    </mat-form-field>
+    <mat-form-field>
+      <label>
+        <input matInput type="text" placeholder="Bairro" formControlName="neighborhood">
+      </label>
+    </mat-form-field>
+    <mat-form-field>
+      <label>
+        <input matInput type="text" placeholder="Código Postal" maxlength="9" formControlName="postalCode">
+      </label>
+      <mat-error *ngIf="personForm.get('address.postalCode').hasError('required')">O código postal é <strong>requerido</strong>!</mat-error>
+      <mat-hint>Incluir hífen!</mat-hint>
+      <mat-hint align="end">{{personForm.get('address.postalCode').value.length}} / 9</mat-hint>
+    </mat-form-field>
+      <div class="common-fields">
+        <mat-form-field>
+          <mat-label>Cidade</mat-label>
+          <mat-select formControlName="cityId">
+            <mat-option>Nenhuma</mat-option>
+            <mat-option *ngFor="let city of cities" [value]="city.id">
+              {{city.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="personForm.get('address.cityId').hasError('required')">A cidade é <strong>requerida</strong>!</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="stateId">
+            <mat-option>Nenhum</mat-option>
+            <mat-option *ngFor="let state of states" [value]="state.id">
+              {{state.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="personForm.get('address.stateId').hasError('required')">O estado é <strong>requerido</strong>!</mat-error>
+        </mat-form-field>
+      </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" *ngIf="personForm" [disabled]="personForm.invalid" (click)="register().then()">{{data.person.id ? 'Salvar' : 'Cadastrar'}}</button>
+  <button mat-flat-button color="primary" (click)="cancel()">Cancelar</button>
+</div>

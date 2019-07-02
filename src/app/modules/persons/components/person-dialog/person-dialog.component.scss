@@ -1,0 +1,24 @@
+.mat-dialog-content {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.mat-dialog-actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.mat-flat-button {
+  width: 40%;
+}
+
+.common-fields {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.address-fields {
+  display: flex;
+  flex-flow: column;
+}

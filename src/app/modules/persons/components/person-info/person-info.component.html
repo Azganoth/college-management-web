@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>{{title}}</h1>
+<div id="person-info">
+  <span class="info"><strong>Nome</strong>: {{person.name}}</span>
+  <span class="info"><strong>Gênero</strong>: {{person.gender === 'UNKNOWN' ? 'Desconhecido' : person.gender === 'MALE' ? 'Masculino' : person.gender === 'FEMALE' ? 'Feminino' : 'Indefinido'}}</span>
+  <span class="info"><strong>Data de Nascimento</strong>: {{person.birthDate}}</span>
+  <span class="info"><strong>Email</strong>: {{person.email || 'N/D'}}</span>
+  <span class="info"><strong>Telefones</strong>: {{person.phones.join(', ')}}</span>
+  <span class="info"><strong>Logradouro</strong>: {{person.address.street}}</span>
+  <span class="info"><strong>Número do logradouro</strong>: {{person.address.number || 'N/D'}}</span>
+  <span class="info"><strong>Número do apartamento/quarto</strong>: {{person.address.numberAptRoom || 'N/D'}}</span>
+  <span class="info"><strong>Complemento</strong>: {{person.address.complement || 'N/D'}}</span>
+  <span class="info"><strong>Bairro</strong>: {{person.address.neighborhood || 'N/D'}}</span>
+  <span class="info"><strong>Código Postal</strong>: {{person.address.postalCode}}</span>
+  <span class="info"><strong>Cidade</strong>: {{person.address.city.name}}</span>
+  <span class="info"><strong>Estado</strong>: {{person.address.city.state.name}} - {{person.address.city.state.abbreviation}}</span>
+</div>
+<div class="mat-dialog-actions">
+  <button mat-flat-button color="primary" (click)="close()">Fechar</button>
+</div>
