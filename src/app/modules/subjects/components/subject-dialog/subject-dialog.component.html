@@ -1,17 +1,22 @@
 <h1 mat-dialog-title>Criando uma disciplina</h1>
-<div mat-dialog-content *ngIf="subjectForm" [formGroup]="subjectForm">
-  <mat-form-field>
+<div mat-dialog-content [formGroup]="subjectForm">
+  <mat-form-field class="field">
     <label>
       <input matInput type="text" placeholder="Nome" formControlName="name">
     </label>
     <mat-error *ngIf="subjectForm.get('name').hasError('required')">O nome é <strong>requerido</strong>!</mat-error>
   </mat-form-field>
-  <mat-form-field>
+
+  <mat-form-field class="field">
+    <mat-label>Descrição</mat-label>
     <label>
-      <textarea matInput placeholder="Descrição" formControlName="description"></textarea>
+      <textarea matInput maxlength="255" cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"
+                formControlName="description"></textarea>
     </label>
+    <mat-hint align="end">{{subjectForm.get('description').value.length}} / 255</mat-hint>
   </mat-form-field>
-  <mat-form-field>
+
+  <mat-form-field class="field">
     <mat-label>Professor</mat-label>
     <mat-select formControlName="professor">
       <mat-option>Nenhum</mat-option>
@@ -23,6 +28,6 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-flat-button color="primary" *ngIf="subjectForm" [disabled]="subjectForm.invalid" (click)="register().then()">Criar</button>
+  <button mat-flat-button color="primary" [disabled]="subjectForm.invalid" (click)="save()">Criar</button>
   <button mat-flat-button color="primary" (click)="cancel()">Cancelar</button>
 </div>

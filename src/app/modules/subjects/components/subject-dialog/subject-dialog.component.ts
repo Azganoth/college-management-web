@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
+import { from as ObservableFrom } from 'rxjs';
 import { Person } from '../../../core/shared/person.model';
 import { ProfessorService } from '../../../core/shared/professor.service';
 
@@ -20,23 +21,22 @@ export class SubjectDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initializeSubject().then();
-  }
-
-  async initializeSubject() {
-    this.professors = await this.professorService.getAll();
     this.subjectForm = new FormGroup({
       name: new FormControl('', Validators.required),
       description: new FormControl(''),
       professor: new FormControl('', Validators.required)
     });
+
+    ObservableFrom(this.professorService.getAll().then((data: Person[]) => data)).subscribe(
+      (data: Person[]) => this.professors = data);
   }
 
-  async register() {
+  save() {
     const subject = this.subjectForm.getRawValue();
-    subject.professor = await this.professorService.get(subject.professor);
-    console.log(subject);
-    this.dialogRef.close(subject);
+    this.professorService.get(subject.professor).then((professor: Person) => {
+      subject.professor = professor;
+      this.dialogRef.close(subject);
+    });
   }
 
   cancel() {

@@ -1,11 +1,16 @@
-#person-info {
+.mat-dialog-content {
   display: flex;
   flex-flow: column nowrap;
 }
 
-.info {
-  margin-top: 10px;
-  font-size: 18px;
+.multiple-field {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  .mat-form-field {
+    width: 40%;
+  }
 }
 
 .mat-dialog-actions {

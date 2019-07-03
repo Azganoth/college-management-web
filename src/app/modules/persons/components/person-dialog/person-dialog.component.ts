@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { from as ObservableFrom } from 'rxjs';
 import { City } from '../../../core/shared/city.model';
 import { CityService } from '../../../core/shared/city.service';
+import { personGender } from '../../../core/shared/person.gender';
 import { Person } from '../../../core/shared/person.model';
 import { State } from '../../../core/shared/state.model';
 import { StateService } from '../../../core/shared/state.service';
@@ -16,13 +17,10 @@ import { StateService } from '../../../core/shared/state.service';
 export class PersonDialogComponent implements OnInit {
 
   title: string;
+  step = 0;
   personForm: FormGroup;
-  personGender = [
-    {value: 'UNKNOWN', viewValue: 'Desconhecido'},
-    {value: 'MALE', viewValue: 'Masculino'},
-    {value: 'FEMALE', viewValue: 'Feminino'},
-    {value: 'UNDEFINED', viewValue: 'Indefinido'}
-  ];
+  personGender = personGender;
+  personGenders = Object.keys(this.personGender);
   today = new Date(Date.now());
   cities: City[];
   states: State[];
@@ -30,7 +28,7 @@ export class PersonDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<PersonDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      subject: string,
+      specialization: string,
       person: Person
     },
     private cityService: CityService,
@@ -38,17 +36,11 @@ export class PersonDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title = this.data.person.id
-      ? `Modificando o ${this.data.subject} ${this.data.person.id}`
-      : `Cadastrando um novo ${this.data.subject}`;
-    this.initializePerson().then();
-  }
+    const hasData = this.data.person.id;
+    this.title = hasData
+      ? `Modificando o ${this.data.specialization} com id [${this.data.person.id}]`
+      : `Cadastrando um novo ${this.data.specialization}`;
 
-  async initializePerson() {
-    this.states = await this.stateService.getAll();
-    if (this.data.person.id) {
-      this.cities = await this.stateService.getAllCities(this.data.person.address.city.state.id);
-    }
     this.personForm = new FormGroup({
       name: new FormControl(this.data.person.name, Validators.required),
       gender: new FormControl(this.data.person.gender, Validators.required),
@@ -60,55 +52,72 @@ export class PersonDialogComponent implements OnInit {
           '(, ?(\\(?[1-9]\\d\\)?)? ?9?[2-9]\\d{3}[ -]?\\d{4})*$')
       ]),
       address: new FormGroup({
-        street: new FormControl(this.data.person.id ? this.data.person.address.street : '',
+        street: new FormControl(hasData ? this.data.person.address.street : '',
           Validators.required),
         number: new FormControl(
-          this.data.person.id ? this.data.person.address.number : ''),
+          hasData ? this.data.person.address.number || '' : ''),
         numberAptRoom: new FormControl(
-          this.data.person.id ? this.data.person.address.numberAptRoom : ''),
+          hasData ? this.data.person.address.numberAptRoom || '' : ''),
         complement: new FormControl(
-          this.data.person.id ? this.data.person.address.complement : ''),
+          hasData ? this.data.person.address.complement || '' : ''),
         neighborhood: new FormControl(
-          this.data.person.id ? this.data.person.address.neighborhood : ''),
+          hasData ? this.data.person.address.neighborhood || '' : ''),
         postalCode: new FormControl(
-          this.data.person.id ? this.data.person.address.postalCode : '',
+          hasData ? this.data.person.address.postalCode : '',
           [Validators.required]),
         cityId: new FormControl(
-          this.data.person.id ? this.data.person.address.city.id : '',
+          hasData ? this.data.person.address.city.id : '',
           Validators.required),
         stateId: new FormControl(
-          this.data.person.id ? this.data.person.address.city.state.id : '',
+          hasData ? this.data.person.address.city.state.id : '',
           Validators.required)
       })
     });
+
     ObservableFrom(this.personForm.get('address.stateId').valueChanges).subscribe(
-      async (id) => {
+      (id: number) => {
         if (id === undefined) {
           this.cities = [];
         } else {
-          this.cities = await this.stateService.getAllCities(id);
+          this.stateService.getAllCities(id).then((cities: City[]) => this.cities = cities);
         }
       }
     );
+
+    this.stateService.getAll().then((states: State[]) => this.states = states);
+    if (hasData) {
+      this.personForm.get('address.stateId').setValue(this.data.person.address.city.state.id);
+    }
   }
 
-  async register() {
+  save() {
+    this.nextStep();
     const person = this.personForm.getRawValue();
     person.id = this.data.person.id || null;
-    if (typeof person.phones === 'string') {
+    if (typeof person.phones === 'string' && person.phones.length > 0) {
       const phones = person.phones;
       person.phones = [];
-      phones.split(',').forEach(value => person.phones.push(value.trim()));
+      phones.split(',').forEach((value: string) => person.phones.push(value.trim()));
     }
     person.address.id = this.data.person.address ? this.data.person.address.id || null : null;
-    person.address.city = await this.cityService.get(person.address.cityId);
-    delete person.address.cityId;
-    delete person.address.stateId;
-    this.dialogRef.close(person);
+    this.cityService.get(person.address.cityId).then((city: City) => {
+      delete person.address.cityId;
+      delete person.address.stateId;
+      person.address.city = city;
+      this.dialogRef.close(person);
+    });
   }
 
   cancel() {
     this.dialogRef.close();
+  }
+
+  prevStep() {
+    this.step--;
+  }
+
+  nextStep() {
+    this.step++;
   }
 
 }

@@ -6,6 +6,7 @@ import {
   MatSort,
   MatTableDataSource
 } from '@angular/material';
+import { from as ObservableFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { Subject } from '../../../core/shared/subject.model';
 import { SubjectService } from '../../../core/shared/subject.service';
@@ -26,12 +27,12 @@ export class SubjectsOverviewPageComponent implements OnInit {
 
   constructor(
     private subjectService: SubjectService,
-    public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.headers = ['name', 'professor', 'description', 'operations'];
+    this.headers = ['name', 'professor', 'operations'];
 
     // Reset back to the first page, if the user changes the sort order.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
@@ -40,41 +41,37 @@ export class SubjectsOverviewPageComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.updateData().then();
+    this.refresh();
   }
 
-  async updateData(): Promise<any> {
-    this.dataSource.data = await this.subjectService.getAll();
+  refresh() {
+    ObservableFrom(this.subjectService.getAll().then((data: Subject[]) => data)).subscribe(
+      (data: Subject[]) => this.dataSource.data = data);
   }
 
-  createSubjectDialog() {
+  showDialog() {
     this.dialog.open(SubjectDialogComponent, {
-      width: '500px',
+      width: '600px',
       disableClose: true
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().subscribe((result: Subject) => {
       if (result) {
-        this.createSubject(result);
+        this.save(result);
       }
     });
   }
 
-  getRoute(id: number): string {
-    return `/subjects/${id}`;
-  }
-
-  createSubject(subject: Subject) {
+  save(subject: Subject) {
     this.subjectService.post(subject).then(() => {
-        this.updateData().then();
-        this.openSnackBar(`Disciplina "${subject.name}" foi criada com sucesso!`);
-      }, () => this.openSnackBar(
-      `Disciplina "${subject.name}" não foi criada...`)
+        this.refresh();
+        this.snackBar.open(`A disciplina ${subject.name} foi criada com sucesso!`);
+      }, () => this.snackBar.open(`A disciplina ${subject.name} não foi criada...`)
     );
   }
 
-  deleteSubject(subject: Subject) {
+  delete(subject: Subject) {
     this.subjectService.delete(subject.id).then(() => {
-        this.updateData().then();
-        this.openSnackBar(`Disciplina "${subject.name}" foi removido com sucesso!`);
+        this.refresh();
+        this.snackBar.open(`A disciplina ${subject.name} foi removido com sucesso!`);
       }
     );
   }
@@ -83,15 +80,12 @@ export class SubjectsOverviewPageComponent implements OnInit {
     this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        message: `Tem certeza que você deseja remover a disciplina "${subject.name}"?`,
-        accept: () => this.deleteSubject(subject),
+        title: 'Confirmar exclusão',
+        message: `Tem certeza que você deseja remover a disciplina ${subject.name}?`,
+        accept: () => this.delete(subject),
         reject: () => null
       }
     });
-  }
-
-  openSnackBar(msg: string) {
-    this.snackBar.open(msg, 'Ok', {duration: 6000});
   }
 
 }

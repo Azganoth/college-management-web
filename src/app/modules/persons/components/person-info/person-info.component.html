@@ -1,18 +1,91 @@
 <h1 mat-dialog-title>{{title}}</h1>
-<div id="person-info">
-  <span class="info"><strong>Nome</strong>: {{person.name}}</span>
-  <span class="info"><strong>Gênero</strong>: {{person.gender === 'UNKNOWN' ? 'Desconhecido' : person.gender === 'MALE' ? 'Masculino' : person.gender === 'FEMALE' ? 'Feminino' : 'Indefinido'}}</span>
-  <span class="info"><strong>Data de Nascimento</strong>: {{person.birthDate}}</span>
-  <span class="info"><strong>Email</strong>: {{person.email || 'N/D'}}</span>
-  <span class="info"><strong>Telefones</strong>: {{person.phones.join(', ')}}</span>
-  <span class="info"><strong>Logradouro</strong>: {{person.address.street}}</span>
-  <span class="info"><strong>Número do logradouro</strong>: {{person.address.number || 'N/D'}}</span>
-  <span class="info"><strong>Número do apartamento/quarto</strong>: {{person.address.numberAptRoom || 'N/D'}}</span>
-  <span class="info"><strong>Complemento</strong>: {{person.address.complement || 'N/D'}}</span>
-  <span class="info"><strong>Bairro</strong>: {{person.address.neighborhood || 'N/D'}}</span>
-  <span class="info"><strong>Código Postal</strong>: {{person.address.postalCode}}</span>
-  <span class="info"><strong>Cidade</strong>: {{person.address.city.name}}</span>
-  <span class="info"><strong>Estado</strong>: {{person.address.city.state.name}} - {{person.address.city.state.abbreviation}}</span>
+<div mat-dialog-content>
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Nome" value="{{person.name}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <div class="multiple-field">
+    <mat-form-field>
+      <label>
+        <input matInput placeholder="Gênero" value="{{personGender[person.gender]}}" disabled>
+      </label>
+    </mat-form-field>
+
+    <mat-form-field>
+      <label>
+        <input matInput [matDatepicker]="datepicker" placeholder="Data de Nascimento" value="{{person.birthDate}}" disabled>
+      </label>
+      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Email" value="{{person.email || 'N/D'}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <mat-chip-list aria-label="Phones" style="padding-bottom: 15px">
+    <mat-chip *ngFor="let phone of person.phones">
+      <mat-icon>phone</mat-icon>
+      {{phone}}
+    </mat-chip>
+  </mat-chip-list>
+
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Logradouro" value="{{person.address.street}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <div class="multiple-field">
+    <mat-form-field>
+      <label>
+        <input matInput placeholder="Número do logradouro" value="{{person.address.number || 'N/D'}}" disabled>
+      </label>
+    </mat-form-field>
+
+    <mat-form-field>
+      <label>
+        <input matInput placeholder="Número do apartamento/quarto" value="{{person.address.numberAptRoom || 'N/D'}}" disabled>
+      </label>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Complemento" value="{{person.address.complement || 'N/D'}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Bairro" value="{{person.address.neighborhood || 'N/D'}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <mat-form-field>
+    <label>
+      <input matInput placeholder="Código Postal" value="{{person.address.postalCode}}" disabled>
+    </label>
+  </mat-form-field>
+
+  <div class="multiple-field">
+    <mat-form-field>
+      <label>
+        <input matInput placeholder="Cidade" value="{{person.address.city.name}}" disabled>
+      </label>
+    </mat-form-field>
+
+    <mat-form-field>
+      <label>
+        <input matInput placeholder="Estado" value="{{person.address.city.state.name}} - {{person.address.city.state.abbreviation}}" disabled>
+      </label>
+    </mat-form-field>
+  </div>
 </div>
 <div class="mat-dialog-actions">
   <button mat-flat-button color="primary" (click)="close()">Fechar</button>

@@ -1,9 +1,9 @@
 <div class="container">
-  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Criar uma nova disciplina." (click)="createSubjectDialog()">
+  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Criar uma nova disciplina." (click)="showDialog()">
     <mat-icon>add</mat-icon>
     Criar
   </button>
-  <h1 class="header">Disciplina</h1>
+  <h1 class="header">Disciplinas</h1>
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
@@ -13,14 +13,10 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Professor</th>
       <td mat-cell *matCellDef="let row">{{row['professor'].name}}</td>
     </ng-container>
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrição</th>
-      <td mat-cell *matCellDef="let row">{{row['description']}}</td>
-    </ng-container>
     <ng-container matColumnDef="operations">
       <th mat-header-cell *matHeaderCellDef>Operações</th>
       <td mat-cell *matCellDef="let row">
-        <button mat-flat-button class="operation-button" color="primary" matTooltip="Mostrar matrículas da disciplina." matTooltipPosition="above" [routerLink]="getRoute(row.id)">
+        <button mat-flat-button class="operation-button" color="primary" matTooltip="Mostrar matrículas da disciplina." matTooltipPosition="above" [routerLink]="'/subjects/' + row.id">
           <mat-icon>account_circle</mat-icon>
         </button>
         <button mat-flat-button class="operation-button" color="warn" matTooltip="Deletar a disciplina." matTooltipPosition="above" (click)="confirmDelete(row)">

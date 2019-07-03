@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  MatButtonModule, MatDatepickerModule,
-  MatDialogModule,
-  MatFormFieldModule,
+  MatButtonModule, MatChipsModule, MatDatepickerModule,
+  MatDialogModule, MatExpansionModule,
+  MatFormFieldModule, MatIconModule,
   MatInputModule, MatSelectModule
 } from '@angular/material';
 import { PersonDialogComponent } from './components/person-dialog/person-dialog.component';
@@ -20,7 +20,10 @@ import { PersonInfoComponent } from './components/person-info/person-info.compon
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatChipsModule
   ],
   entryComponents: [PersonInfoComponent, PersonDialogComponent]
 })

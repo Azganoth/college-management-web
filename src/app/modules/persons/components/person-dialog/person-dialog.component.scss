@@ -1,6 +1,29 @@
-.mat-dialog-content {
+.accordion-header .mat-expansion-panel-header-title,
+.accordion-header .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.accordion-header .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-action-row {
+  padding: 6px 8px;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.multiple-field {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  .mat-form-field {
+    width: 40%;
+  }
 }
 
 .mat-dialog-actions {
@@ -8,17 +31,7 @@
   justify-content: space-evenly;
 }
 
-.mat-flat-button {
+#cancel-btn {
   width: 40%;
-}
-
-.common-fields {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
-
-.address-fields {
-  display: flex;
-  flex-flow: column;
+  justify-content: space-evenly;
 }

@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Enrollment } from '../../../core/shared/enrollment.model';
 import { Person } from '../../../core/shared/person.model';
 import { StudentService } from '../../../core/shared/student.service';
 import { Subject } from '../../../core/shared/subject.model';
-import { SubjectService } from '../../../core/shared/subject.service';
 
 @Component({
   selector: 'app-enrollment-dialog',
@@ -16,33 +14,22 @@ export class EnrollmentDialogComponent implements OnInit {
 
   students: Person[];
   studentsForm: FormControl;
-  enrollments: Enrollment[];
 
   constructor(
     private dialogRef: MatDialogRef<EnrollmentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
       subject: Subject
     },
-    private studentService: StudentService,
-    private subjectService: SubjectService
+    private studentService: StudentService
   ) { }
 
   ngOnInit() {
-    this.initializeSubject().then();
+    this.studentsForm = new FormControl('', Validators.required);
+    this.studentService.getAll().then((students: Person[]) => this.students = students);
   }
 
-  async initializeSubject() {
-    this.students = await this.studentService.getAll();
-    this.enrollments = await this.subjectService.getAllEnrollments(this.data.subject.id);
-    const studentsIds = [];
-    for (const enrollment of this.enrollments) {
-      studentsIds.push(enrollment.student.id);
-    }
-    this.studentsForm = new FormControl(studentsIds);
-  }
-
-  async register() {
-    this.dialogRef.close({subjectId: this.data.subject.id, studentsIds: this.studentsForm.value});
+  save() {
+    this.dialogRef.close({subjectId: this.data.subject.id, studentId: this.studentsForm.value});
   }
 
   cancel() {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  MatButtonModule,
+  MatButtonModule, MatChipsModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
@@ -38,7 +38,8 @@ import { EnrollmentsOverviewPageComponent } from './pages/enrollments-overview-p
     MatDialogModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatChipsModule
   ],
   entryComponents: [EnrollmentDialogComponent]
 })

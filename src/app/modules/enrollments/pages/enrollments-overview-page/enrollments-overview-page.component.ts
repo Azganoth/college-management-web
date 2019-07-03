@@ -29,9 +29,9 @@ export class EnrollmentsOverviewPageComponent implements OnInit {
 
   constructor(
     private subjectService: SubjectService,
+    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -44,17 +44,20 @@ export class EnrollmentsOverviewPageComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.updateData().then();
+    this.refresh();
   }
 
-  async updateData(): Promise<any> {
-    this.subject = await this.subjectService.get(this.route.snapshot.params.id);
-    this.dataSource.data = await this.subjectService.getAllEnrollments(this.subject.id);
+  refresh() {
+    this.subjectService.get(this.route.snapshot.params.id).then((subject: Subject) => {
+      this.subject = subject;
+      this.subjectService.getAllEnrollments(subject.id).then(
+        (enrollments: Enrollment[]) => this.dataSource.data = enrollments);
+    });
   }
 
   // i dont have a fuckin clue why the fuck those grade are duplicating when converted to json
   getGrades(grades: number[]): number[] {
-    return [...new Set(grades)];
+    return [...new Set(grades)]; // so lets remove the duplicates...
   }
 
   getAverage(grades: number[]): string {
@@ -70,7 +73,7 @@ export class EnrollmentsOverviewPageComponent implements OnInit {
     return averageNumber >= 7 ? 'Aprovado' : averageNumber > 2 ? 'Recuperação' : 'Reprovado';
   }
 
-  createEnrollmentDialog() {
+  showDialog() {
     this.dialog.open(EnrollmentDialogComponent, {
       width: '500px',
       disableClose: true,
@@ -79,26 +82,23 @@ export class EnrollmentsOverviewPageComponent implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        for (const studentId of result.studentsIds) {
-          this.createEnrollment(result.subjectId, studentId);
-        }
+        this.save(result.subjectId, result.studentId);
       }
     });
   }
 
-  createEnrollment(subjectId: number, studentId: number) {
+  save(subjectId: number, studentId: number) {
     this.subjectService.postEnrollment(subjectId, studentId).then(() => {
-        this.updateData().then();
-        this.openSnackBar(`Matrícula foi criada com sucesso!`);
-      }, () => this.openSnackBar(
-      `Matrícula não foi criada...`)
+        this.refresh();
+        this.snackBar.open(`A matrícula foi criada com sucesso!`);
+      }, () => this.snackBar.open(`A matrícula não foi criada...`)
     );
   }
 
-  deleteEnrollment(enrollment: Enrollment) {
+  delete(enrollment: Enrollment) {
     this.subjectService.deleteEnrollment(this.subject.id, enrollment.student.id).then(() => {
-        this.updateData().then();
-        this.openSnackBar(`Matrícula entre "${enrollment.subject.name}" e ${enrollment.student.name} foi removida com sucesso!`);
+        this.refresh();
+        this.snackBar.open(`A matrícula de ${enrollment.student.name} foi removida com sucesso!`);
       }
     );
   }
@@ -107,15 +107,11 @@ export class EnrollmentsOverviewPageComponent implements OnInit {
     this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        message: `Tem certeza que você deseja remover a matrícula entre "${enrollment.subject.name}" e "${enrollment.student.name}"?`,
-        accept: () => this.deleteEnrollment(enrollment),
+        message: `Tem certeza que você deseja remover a matrícula de ${enrollment.student.name}?`,
+        accept: () => this.delete(enrollment),
         reject: () => null
       }
     });
-  }
-
-  openSnackBar(msg: string) {
-    this.snackBar.open(msg, 'Ok', {duration: 6000});
   }
 
 }

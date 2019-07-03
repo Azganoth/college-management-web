@@ -1,5 +1,5 @@
 <div class="container">
-  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Criar uma nova matricula." (click)="createEnrollmentDialog()">
+  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Criar uma nova matricula." (click)="showDialog()">
     <mat-icon>add</mat-icon>
     Adicionar estudante
   </button>
@@ -9,18 +9,28 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Estudante</th>
       <td mat-cell *matCellDef="let row">{{row['student'].name}}</td>
     </ng-container>
+
     <ng-container matColumnDef="grades">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Notas</th>
-      <td mat-cell *matCellDef="let row">{{getGrades(row['grades']).join(", ")}}</td>
+      <th mat-header-cell *matHeaderCellDef>Notas</th>
+      <td mat-cell *matCellDef="let row">
+        <mat-chip-list>
+          <mat-chip *ngFor="let grade of getGrades(row['grades'])">
+            {{grade}}
+          </mat-chip>
+        </mat-chip-list>
+      </td>
     </ng-container>
+
     <ng-container matColumnDef="average">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Média</th>
       <td mat-cell *matCellDef="let row">{{getAverage(getGrades(row['grades']))}}</td>
     </ng-container>
+
     <ng-container matColumnDef="averageStatus">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
       <td mat-cell *matCellDef="let row">{{getAverageStatus(getAverage(getGrades(row['grades'])))}}</td>
     </ng-container>
+
     <ng-container matColumnDef="operations">
       <th mat-header-cell *matHeaderCellDef>Operações</th>
       <td mat-cell *matCellDef="let row">

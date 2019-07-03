@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { personGender } from '../../../core/shared/person.gender';
 import { Person } from '../../../core/shared/person.model';
 
 @Component({
@@ -11,6 +12,7 @@ export class PersonInfoComponent implements OnInit {
 
   title: string;
   person: Person;
+  personGender = personGender;
 
   constructor(
     private dialogRef: MatDialogRef<PersonInfoComponent>,
@@ -21,7 +23,7 @@ export class PersonInfoComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.title = `Mostrando informações do ${this.data.specialization} ${this.data.person.id}`;
+    this.title = `Mostrando informações do ${this.data.specialization} com id [${this.data.person.id}]`;
     this.person = this.data.person;
   }
 

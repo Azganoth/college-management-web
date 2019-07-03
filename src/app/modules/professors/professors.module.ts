@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  MatButtonModule,
+  MatButtonModule, MatChipsModule,
   MatFormFieldModule,
   MatIconModule, MatNativeDateModule,
   MatPaginatorModule, MatSnackBarModule, MatSortModule, MatTableModule, MatTooltipModule
@@ -24,7 +24,8 @@ import { ProfessorsRoutingModule } from './professors-routing.module';
     MatSortModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatChipsModule
   ]
 })
 export class ProfessorsModule { }

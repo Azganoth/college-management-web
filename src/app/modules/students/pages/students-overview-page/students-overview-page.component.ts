@@ -6,7 +6,9 @@ import {
   MatSort,
   MatTableDataSource
 } from '@angular/material';
+import { from as ObservableFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { personGender } from '../../../core/shared/person.gender';
 import { Person } from '../../../core/shared/person.model';
 import { StudentService } from '../../../core/shared/student.service';
 import { PersonDialogComponent } from '../../../persons/components/person-dialog/person-dialog.component';
@@ -21,14 +23,15 @@ export class StudentsOverviewPageComponent implements OnInit {
 
   headers: string[];
   dataSource: MatTableDataSource<Person>;
+  personGender = personGender;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(
     private studentService: StudentService,
-    public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -41,30 +44,32 @@ export class StudentsOverviewPageComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.updateData().then();
+    this.refresh();
   }
 
-  async updateData(): Promise<any> {
-    this.dataSource.data = await this.studentService.getAll();
+  refresh() {
+    ObservableFrom(this.studentService.getAll().then((data: Person[]) => data)).subscribe(
+      (data: Person[]) => this.dataSource.data = data);
   }
 
-  showStudent(student?: Person) {
+  showDialog(student?: Person) {
     this.dialog.open(PersonDialogComponent, {
-      width: '500px',
+      width: '600px',
       disableClose: true,
       data: {
-        subject: 'estudante',
+        specialization: 'estudante',
         person: student || {}
       }
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().subscribe((result: Person) => {
       if (result) {
-        this.createStudent(result);
+        this.save(result);
       }
     });
   }
 
-  showStudentInfo(student: Person) {
+  showInfo(student: Person) {
     this.dialog.open(PersonInfoComponent, {
+      width: '500px',
       data: {
         specialization: 'estudante',
         person: student
@@ -72,31 +77,30 @@ export class StudentsOverviewPageComponent implements OnInit {
     });
   }
 
-  createStudent(student: Person) {
-    console.log(student);
+  save(student: Person) {
     if (student.id) {
       this.studentService.put(student, student.id).then(() => {
-          this.updateData().then();
-          this.openSnackBar(`Estudante "${student.name}" foi atualizado com sucesso!`);
-        }, () => this.openSnackBar(
-        `Estudante "${student.name}" não foi atualizado...`)
+          this.refresh();
+          this.snackBar.open(`O estudante ${student.name} foi atualizado com sucesso!`);
+        }, () => this.snackBar.open(`O estudante ${student.name} não foi atualizado...`)
       );
     } else {
       this.studentService.post(student).then(() => {
-          this.updateData().then();
-          this.openSnackBar(`Estudante "${student.name}" foi cadastrado com sucesso!`);
-        }, () => this.openSnackBar(
-        `Estudante "${student.name}" não foi cadastrado...`)
+          this.refresh();
+          this.snackBar.open(`O estudante ${student.name} foi cadastrado com sucesso!`);
+        }, () => this.snackBar.open(`O estudante ${student.name} não foi cadastrado...`)
       );
     }
   }
 
-  deleteStudent(student: Person) {
+  delete(student: Person) {
     this.studentService.delete(student.id).then(() => {
-        this.updateData().then();
-        this.openSnackBar(`Estudante "${student.name}" foi removido com sucesso!`);
-      }, () => this.openSnackBar(
-      `Estudante "${student.name}" possui dependências portanto não pode ser removido.`)
+        this.refresh();
+        this.snackBar.open(`O estudante ${student.name} foi removido com sucesso!`);
+      }, (data) => {
+        console.error(data.error.message);
+        this.snackBar.open(`O estudante ${student.name} não pode ser removido.`);
+      }
     );
   }
 
@@ -104,15 +108,12 @@ export class StudentsOverviewPageComponent implements OnInit {
     this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        message: `Tem certeza que você deseja remover o estudante "${student.name}"?`,
-        accept: () => this.deleteStudent(student),
+        title: 'Confirmar exclusão',
+        message: `Tem certeza que você deseja remover o estudante ${student.name}?`,
+        accept: () => this.delete(student),
         reject: () => null
       }
     });
-  }
-
-  openSnackBar(msg: string) {
-    this.snackBar.open(msg, 'Ok', {duration: 6000});
   }
 
 }

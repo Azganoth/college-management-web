@@ -1,4 +1,4 @@
-import { MatPaginatorIntl } from '@angular/material';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatPaginatorIntl } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,7 +34,10 @@ import { SharedModule } from './shared/shared.module';
     EnrollmentsModule
   ],
   entryComponents: [ConfirmationDialogComponent],
-  providers: [{provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro}],
+  providers: [
+    {provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 5000}}
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

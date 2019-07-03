@@ -6,7 +6,9 @@ import {
   MatSort,
   MatTableDataSource
 } from '@angular/material';
+import { from as ObservableFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { personGender } from '../../../core/shared/person.gender';
 import { Person } from '../../../core/shared/person.model';
 import { ProfessorService } from '../../../core/shared/professor.service';
 import { PersonDialogComponent } from '../../../persons/components/person-dialog/person-dialog.component';
@@ -21,14 +23,15 @@ export class ProfessorsOverviewPageComponent implements OnInit {
 
   headers: string[];
   dataSource: MatTableDataSource<Person>;
+  personGender = personGender;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(
     private professorService: ProfessorService,
-    public dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -41,29 +44,30 @@ export class ProfessorsOverviewPageComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    this.updateData().then();
+    this.refresh();
   }
 
-  async updateData(): Promise<any> {
-    this.dataSource.data = await this.professorService.getAll();
+  refresh() {
+    ObservableFrom(this.professorService.getAll().then((data: Person[]) => data)).subscribe(
+      (data: Person[]) => this.dataSource.data = data);
   }
 
-  showProfessor(professor?: Person) {
+  showDialog(professor?: Person) {
     this.dialog.open(PersonDialogComponent, {
-      width: '500px',
+      width: '600px',
       disableClose: true,
       data: {
-        subject: 'professor',
+        specialization: 'professor',
         person: professor || {}
       }
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().subscribe((result: Person) => {
       if (result) {
-        this.createProfessor(result);
+        this.save(result);
       }
     });
   }
 
-  showProfessorInfo(professor: Person) {
+  showInfo(professor: Person) {
     this.dialog.open(PersonInfoComponent, {
       data: {
         specialization: 'professor',
@@ -72,31 +76,30 @@ export class ProfessorsOverviewPageComponent implements OnInit {
     });
   }
 
-  createProfessor(professor: Person) {
-    console.log(professor);
+  save(professor: Person) {
     if (professor.id) {
       this.professorService.put(professor, professor.id).then(() => {
-          this.updateData().then();
-          this.openSnackBar(`Professor "${professor.name}" foi atualizado com sucesso!`);
-        }, () => this.openSnackBar(
-        `Professor "${professor.name}" não foi atualizado...`)
+          this.refresh();
+          this.snackBar.open(`O professor ${professor.name} foi atualizado com sucesso!`);
+        }, () => this.snackBar.open(`O professor ${professor.name} não foi atualizado...`)
       );
     } else {
       this.professorService.post(professor).then(() => {
-          this.updateData().then();
-          this.openSnackBar(`Professor "${professor.name}" foi cadastrado com sucesso!`);
-        }, () => this.openSnackBar(
-        `Professor "${professor.name}" não foi cadastrado...`)
+          this.refresh();
+          this.snackBar.open(`O professor ${professor.name} foi cadastrado com sucesso!`);
+        }, () => this.snackBar.open(`O professor ${professor.name} não foi cadastrado...`)
       );
     }
   }
 
-  deleteProfessor(professor: Person) {
+  delete(professor: Person) {
     this.professorService.delete(professor.id).then(() => {
-      this.updateData().then();
-      this.openSnackBar(`Professor "${professor.name}" foi removido com sucesso!`);
-    }, () => this.openSnackBar(
-        `Professor "${professor.name}" possui dependências portanto não pode ser removido.`)
+        this.refresh();
+        this.snackBar.open(`O professor ${professor.name} foi removido com sucesso!`);
+      }, (data) => {
+        console.error(data.error.message);
+        this.snackBar.open(`O professor ${professor.name} não pode ser removido.`);
+      }
     );
   }
 
@@ -104,15 +107,12 @@ export class ProfessorsOverviewPageComponent implements OnInit {
     this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
       data: {
-        message: `Tem certeza que você deseja remover o professor "${professor.name}"?`,
-        accept: () => this.deleteProfessor(professor),
+        title: 'Confirmar exclusão',
+        message: `Tem certeza que você deseja remover o professor ${professor.name}?`,
+        accept: () => this.delete(professor),
         reject: () => null
       }
     });
-  }
-
-  openSnackBar(msg: string) {
-    this.snackBar.open(msg, 'Ok', {duration: 6000});
   }
 
 }
