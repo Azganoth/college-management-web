@@ -1,6 +1,7 @@
 const basePaths = {
   professors: 'professors',
-  students: 'students'
+  students: 'students',
+  subjects: 'subjects'
 };
 
 const routesNames = {
@@ -11,6 +12,9 @@ const routesNames = {
   },
   students: {
     basePath: basePaths.students
+  },
+  subjects: {
+    basePath: basePaths.subjects
   }
 };
 

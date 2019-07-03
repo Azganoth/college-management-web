@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Criando uma disciplina</h1>
+<div mat-dialog-content *ngIf="subjectForm" [formGroup]="subjectForm">
+  <mat-form-field>
+    <label>
+      <input matInput type="text" placeholder="Nome" formControlName="name">
+    </label>
+    <mat-error *ngIf="subjectForm.get('name').hasError('required')">O nome é <strong>requerido</strong>!</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <label>
+      <textarea matInput placeholder="Descrição" formControlName="description"></textarea>
+    </label>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Professor</mat-label>
+    <mat-select formControlName="professor">
+      <mat-option>Nenhum</mat-option>
+      <mat-option *ngFor="let professor of professors" [value]="professor.id">
+        {{professor.name}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="subjectForm.get('professor').hasError('required')">O professor é <strong>requerido</strong>!</mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" *ngIf="subjectForm" [disabled]="subjectForm.invalid" (click)="register().then()">Criar</button>
+  <button mat-flat-button color="primary" (click)="cancel()">Cancelar</button>
+</div>

@@ -13,6 +13,8 @@ const routes: Routes = [
       () => import('./modules/professors/professors.module').then(m => m.ProfessorsModule)},
   {path: routesNames.students.basePath, loadChildren:
       () => import('./modules/students/students.module').then(m => m.StudentsModule)},
+  {path: routesNames.subjects.basePath, loadChildren:
+      () => import('./modules/subjects/subjects.module').then(m => m.SubjectsModule)},
 
   {path: '**', redirectTo: RoutesConfig.routes.error404}
 ];
