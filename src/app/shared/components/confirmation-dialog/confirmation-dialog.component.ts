@@ -20,7 +20,21 @@ export class ConfirmationDialogComponent implements OnInit {
 
   ngOnInit() {
     this.dialogRef.afterClosed()
-      .subscribe(result => result ? this.data.accept() : this.data.reject());
+      .subscribe((result: object) => {
+        if (result) {
+          if (typeof this.data.accept === 'function') {
+            this.data.accept();
+          } else {
+            console.warn(`Value assigned for accept isn't of type function.`, this.data.accept);
+          }
+        } else {
+          if (typeof this.data.reject === 'function') {
+            this.data.reject();
+          } else {
+            console.warn(`Value assigned for reject isn't of type function.`, this.data.reject);
+          }
+        }
+      });
   }
 
 }
