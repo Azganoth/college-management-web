@@ -33,10 +33,6 @@ export class SubjectService {
     return this.http.get<Enrollment[]>(`${this.url}/${id}/enrollments`).toPromise();
   }
 
-  put(subject: Subject, id: number): Promise<void> {
-    return this.http.put(`${this.url}/${id}`, subject).toPromise().then(() => null);
-  }
-
   delete(id: number): Promise<void> {
     return this.http.delete(`${this.url}/${id}`).toPromise().then(() => null);
   }

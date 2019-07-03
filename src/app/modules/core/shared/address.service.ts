@@ -12,10 +12,6 @@ export class AddressService {
 
   constructor(private http: HttpClient) { }
 
-  post(address: Address): Promise<any> {
-    return this.http.post(this.url, address).toPromise();
-  }
-
   get(id: number): Promise<Address> {
     return this.http.get<Address>(`${this.url}/${id}`).toPromise();
   }

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConfig } from '../../../config/app.config';
 import { Person } from './person.model';
-import { Subject } from './subject.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +22,6 @@ export class ProfessorService {
 
   getAll(): Promise<Person[]> {
     return this.http.get<Person[]>(this.url).toPromise();
-  }
-
-  getAllSubjects(id: number): Promise<Subject[]> {
-    return this.http.get<Subject[]>(`${this.url}/${id}/subjects`).toPromise();
   }
 
   put(professor: Person, id: number): Promise<void> {
