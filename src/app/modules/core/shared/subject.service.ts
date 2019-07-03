@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppConfig } from '../../../config/app.config';
 import { Enrollment } from './enrollment.model';
-import { Person } from './person.model';
 import { Subject } from './subject.model';
 
 @Injectable({
@@ -18,8 +17,8 @@ export class SubjectService {
     return this.http.post(this.url, subject).toPromise();
   }
 
-  postEnrollments(student: Person, id: number): Promise<any> {
-    return this.http.post(`${this.url}/${id}`, student).toPromise();
+  postEnrollment(subjectId: number, studentId: number): Promise<any> {
+    return this.http.post(`${AppConfig.serverUrl}/enrollments`, {subjectId, studentId}).toPromise();
   }
 
   get(id: number): Promise<Subject> {
@@ -40,6 +39,10 @@ export class SubjectService {
 
   delete(id: number): Promise<void> {
     return this.http.delete(`${this.url}/${id}`).toPromise().then(() => null);
+  }
+
+  deleteEnrollment(subjectId: number, studentId: number): Promise<any> {
+    return this.http.delete(`${this.url}/${subjectId}/${studentId}`).toPromise();
   }
 
 }

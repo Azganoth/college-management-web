@@ -1,0 +1,39 @@
+<div class="container">
+  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Criar uma nova matricula." (click)="createEnrollmentDialog()">
+    <mat-icon>add</mat-icon>
+    Adicionar estudante
+  </button>
+  <h1 class="header" *ngIf="subject">Matrículas da disciplina {{subject.name}}</h1>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="student">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estudante</th>
+      <td mat-cell *matCellDef="let row">{{row['student'].name}}</td>
+    </ng-container>
+    <ng-container matColumnDef="grades">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Notas</th>
+      <td mat-cell *matCellDef="let row">{{getGrades(row['grades']).join(", ")}}</td>
+    </ng-container>
+    <ng-container matColumnDef="average">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Média</th>
+      <td mat-cell *matCellDef="let row">{{getAverage(getGrades(row['grades']))}}</td>
+    </ng-container>
+    <ng-container matColumnDef="averageStatus">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+      <td mat-cell *matCellDef="let row">{{getAverageStatus(getAverage(getGrades(row['grades'])))}}</td>
+    </ng-container>
+    <ng-container matColumnDef="operations">
+      <th mat-header-cell *matHeaderCellDef>Operações</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-flat-button class="operation-button" color="warn" matTooltip="Remover matrícula." matTooltipPosition="above" (click)="confirmDelete(row)">
+          <mat-icon >remove</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="headers"></tr>
+    <tr mat-row *matRowDef="let row; columns: headers;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+</div>
+

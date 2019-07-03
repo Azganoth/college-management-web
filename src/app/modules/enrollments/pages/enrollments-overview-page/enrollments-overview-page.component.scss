@@ -1,0 +1,24 @@
+.header {
+  text-align: center;
+}
+
+.operation-button {
+  margin: 0 5px;
+}
+
+.operation-button#add-btn {
+  position: absolute;
+  height: 44px;
+}
+
+.operation-button:not(#add-btn) {
+  min-width: 56px;
+}
+
+th.mat-column-operations {
+  text-align: center;
+}
+
+td.mat-column-operations {
+  width: 198px;
+}

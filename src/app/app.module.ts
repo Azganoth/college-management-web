@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './modules/core/core.module';
+import { EnrollmentsModule } from './modules/enrollments/enrollments.module';
 import { ProfessorsModule } from './modules/professors/professors.module';
 import { StudentsModule } from './modules/students/students.module';
 import { SubjectsModule } from './modules/subjects/subjects.module';
@@ -29,7 +30,8 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     ProfessorsModule,
     StudentsModule,
-    SubjectsModule
+    SubjectsModule,
+    EnrollmentsModule
   ],
   entryComponents: [ConfirmationDialogComponent],
   providers: [{provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro}],
