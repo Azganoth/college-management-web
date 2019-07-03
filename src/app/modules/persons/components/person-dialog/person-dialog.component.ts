@@ -94,11 +94,13 @@ export class PersonDialogComponent implements OnInit {
 
   async register() {
     const person = this.personForm.getRawValue();
+    person.id = this.data.person.id || null;
     if (typeof person.phones === 'string') {
       const phones = person.phones;
       person.phones = [];
       phones.split(',').forEach(value => person.phones.push(value.trim()));
     }
+    person.address.id = this.data.person.address ? this.data.person.address.id || null : null;
     person.address.city = await this.cityService.get(person.address.cityId);
     delete person.address.cityId;
     delete person.address.stateId;
