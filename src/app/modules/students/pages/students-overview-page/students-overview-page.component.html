@@ -1,0 +1,41 @@
+<div class="container">
+  <button mat-flat-button class="operation-button" id="add-btn" color="accent" matTooltip="Cadastrar um novo estudante." (click)="showStudent()">
+    <mat-icon>add</mat-icon>
+    Cadastrar
+  </button>
+  <h1 class="header">Estudante</h1>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
+      <td mat-cell *matCellDef="let row">{{row['name']}}</td>
+    </ng-container>
+    <ng-container matColumnDef="gender">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Gênero</th>
+      <td mat-cell *matCellDef="let row">{{row['gender'] === 'UNKNOWN' ? 'Desconhecido' : row['gender'] === 'MALE' ? 'Masculino' : row['gender'] === 'FEMALE' ? 'Feminino' : 'Indefinido'}}</td>
+    </ng-container>
+    <ng-container matColumnDef="phones">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Telefones</th>
+      <td mat-cell *matCellDef="let row">{{row['phones'].join(', ')}}</td>
+    </ng-container>
+    <ng-container matColumnDef="operations">
+      <th mat-header-cell *matHeaderCellDef>Operações</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-flat-button class="operation-button" color="primary" matTooltip="Mostrar informações do estudante." matTooltipPosition="above" (click)="showStudentInfo(row)">
+          <mat-icon>info</mat-icon>
+        </button>
+        <button mat-flat-button class="operation-button" color="primary" matTooltip="Modificar os dados do estudante." matTooltipPosition="above" (click)="showStudent(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-flat-button class="operation-button" color="warn" matTooltip="Deletar o estudante." matTooltipPosition="above" (click)="confirmDelete(row)">
+          <mat-icon >remove</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="headers"></tr>
+    <tr mat-row *matRowDef="let row; columns: headers;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+</div>
+

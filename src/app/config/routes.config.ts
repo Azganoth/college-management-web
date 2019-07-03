@@ -1,5 +1,6 @@
 const basePaths = {
-  professors: 'professors'
+  professors: 'professors',
+  students: 'students'
 };
 
 const routesNames = {
@@ -7,6 +8,9 @@ const routesNames = {
   error404: '404',
   professors: {
     basePath: basePaths.professors
+  },
+  students: {
+    basePath: basePaths.students
   }
 };
 
